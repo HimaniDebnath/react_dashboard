@@ -48,7 +48,14 @@ export default function YoutubeSummarizer() {
                 body: JSON.stringify({ url }),
             });
 
-            const data = await response.json();
+            let data;
+            const text = await response.text();
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error("Failed to parse JSON response:", text);
+                throw new Error("Server returned an invalid response. This usually happens when the deployment is still stabilizing or a hard error occurred.");
+            }
 
             if (!response.ok) {
                 if (response.status === 429) {
