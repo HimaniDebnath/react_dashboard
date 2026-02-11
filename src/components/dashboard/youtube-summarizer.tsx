@@ -59,7 +59,10 @@ export default function YoutubeSummarizer() {
                     }
                     throw new Error(data.error || "Rate limit reached. Retrying...");
                 }
-                throw new Error(data.error || "Failed to summarize video");
+                if (response.status === 504) {
+                    throw new Error("The request timed out. This often happens on Vercel with long videos. Please try a shorter video (under 5 mins).");
+                }
+                throw new Error(data.error || "Failed to summarize video. The video might be restricted or too long.");
             }
 
             setResult(data);
